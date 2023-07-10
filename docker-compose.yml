@@ -10,11 +10,11 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=randompassword
       - POSTGRES_DB=livestream
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - '4000:4000'
-    depends_on:
-      - db
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - '4000:4000'
+  #   depends_on:
+  #     - db

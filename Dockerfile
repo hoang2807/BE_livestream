@@ -1,15 +1,15 @@
-FROM node:18-alpine
+# FROM node:18-alpine
 
-WORKDIR /usr/src/app
+# WORKDIR /usr/src/app
 
-COPY package.json ./
+# COPY package.json ./
 
-RUN npm i
+# RUN npm i
 
-COPY . .
+# COPY . .
 
-RUN npx prisma generate
+# RUN npx prisma generate
 
-RUN npm run build
+# RUN npm run build
 
-CMD [ "node" , "dist/main.js" ]
+# CMD [ "node" , "dist/main.js" ]
