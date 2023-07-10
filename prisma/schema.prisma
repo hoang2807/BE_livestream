@@ -20,13 +20,11 @@ model User {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
-  username String
-  fullname String
-  email String
+  username String @unique
+  full_name String?
+  email String @unique
   phone_number String
   hash String
   hashedRT String?
   role Role @default(USER)
-
-  @@map("users")
 }

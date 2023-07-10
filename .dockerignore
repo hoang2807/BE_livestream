@@ -1,0 +1,9 @@
+.git
+node_modules
+dist
+.eslint*
+.prettier*
+.Dockerfile
+.dockerignore
+docker-conpose.yml
+READEME.md
