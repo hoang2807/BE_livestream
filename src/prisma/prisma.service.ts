@@ -1,6 +1,5 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-
 @Injectable()
 export class PrismaService
   extends PrismaClient
@@ -10,7 +9,7 @@ export class PrismaService
     super({
       datasources: {
         db: {
-          url: 'postgresql://postgres:randompassword@localhost:5432/livestream?schema=public',
+          url: 'postgresql://postgres:randompassword@postgres:5432/livestream?schema=public',
         },
       },
     });

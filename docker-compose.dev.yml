@@ -1,0 +1,38 @@
+version: '3.1'
+services:
+  postgres:
+    image: postgres:13-alpine
+    restart: unless-stopped
+    container_name: postgresprisma
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=randompassword
+      - POSTGRES_DB=livestream
+    ports:
+      - 5432:5432
+    volumes:
+      - docker-postgres:/var/lib/postgresql/data
+    networks:
+      - livestream-app
+  nestjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://postgres:randompassword@postgres:5432/livestream?schema=public
+    ports:
+      - 4000:4000
+    depends_on:
+      - postgres
+    volumes:
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    networks:
+      - livestream-app
+networks:
+  livestream-app:
+    driver: bridge
+volumes:
+  docker-postgres:

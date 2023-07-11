@@ -29,16 +29,9 @@
 ## Installation
 
 ```bash
-$ npm install
-```
-
-## Install Database
-
-```
-docker-compose up
-npx prisma migrate dev
-npx prisma db push
-npx prisma studio (show database)
+$ cp .env.example .env
+$ docker-compose -f ./docker-compose.prod.yml up --build
+$ npx prisma migrate dev (run once unless you do a fresh install or delete the volume)
 ```
 
 ## Running the app

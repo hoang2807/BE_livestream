@@ -1,15 +1,13 @@
-# FROM node:18-alpine
+FROM node:18.16-bullseye-slim as base
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npx prisma generate
 
-# WORKDIR /usr/src/app
+FROM base as development
+CMD ["npm", "run", "start:dev"]
 
-# COPY package.json ./
-
-# RUN npm i
-
-# COPY . .
-
-# RUN npx prisma generate
-
-# RUN npm run build
-
-# CMD [ "node" , "dist/main.js" ]
+FROM base as production
+RUN npm run build
+CMD ["npm", "run", "start:prod"]
