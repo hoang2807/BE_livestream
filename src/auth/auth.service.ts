@@ -60,6 +60,7 @@ export class AuthService {
     await this.updateRtHash(user.id, tokens.refresh_token);
     return tokens;
   }
+
   async logout(userId: number) {
     await this.prisma.user.updateMany({
       where: {
@@ -72,7 +73,9 @@ export class AuthService {
         hashedRT: null,
       },
     });
+    return true;
   }
+
   async refreshToken(userId: number, rt: string) {
     const user = await this.prisma.user.findUnique({
       where: {
@@ -80,7 +83,7 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new ForbiddenException('Access Denied');
+    if (!user || !user.hashedRT) throw new ForbiddenException('Access Denied');
 
     const rhMatches = bcrypt.compare(rt, user.hashedRT);
 
