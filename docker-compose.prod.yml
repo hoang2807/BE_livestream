@@ -21,11 +21,10 @@ services:
       target: production
     restart: unless-stopped
     environment:
-      - DATABASE_URL="postgresql://postgres:randompassword@postgres:5432/livestream?schema=public"
+      - DATABASE_URL=postgresql://postgres:randompassword@postgres:5432/livestream?schema=public
     volumes:
       - .:/usr/src/app
-    env_file:
-      - .env
+      - .:/usr/node_modules
     ports:
       - 4000:4000
     depends_on:

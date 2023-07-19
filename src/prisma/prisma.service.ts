@@ -8,6 +8,8 @@ export class PrismaService
 {
   constructor(config: ConfigService) {
     const url = config.get<string>('DATABASE_URL');
+    console.log('🚀 ~ file: prisma.service.ts:11 ~ constructor ~ url:', url);
+
     super({
       datasources: {
         db: {

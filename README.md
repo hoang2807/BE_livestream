@@ -29,9 +29,14 @@
 ## Installation
 
 ```bash
-$ cp .env.example .env
 $ docker-compose -f ./docker-compose.prod.yml up --build
-$ npx prisma migrate dev (run once unless you do a fresh install or delete the volume)
+$ npx prisma migrate dev
+```
+
+## Use
+
+```
+/api/v1/swagger -> render swagger
 ```
 
 ## Running the app
