@@ -24,7 +24,7 @@ services:
       - DATABASE_URL=postgresql://postgres:randompassword@postgres:5432/livestream?schema=public
     volumes:
       - .:/usr/src/app
-      - .:/usr/node_modules
+      - /usr/src/app/node_modules
     ports:
       - 4000:4000
     depends_on:
