@@ -8,13 +8,14 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthSignupDto, AuthLoginDto } from './dto';
-import { Tokens } from './types';
+import { SignupType, Tokens } from './types';
 import { RtGuard } from 'src/common/guards';
 import {
   GetCurrentUser,
   GetCurrentUserId,
   Public,
 } from 'src/common/decorators';
+import { LoginType } from './types/auth/login.type';
 
 @Controller('auth')
 export class AuthController {
@@ -25,14 +26,14 @@ export class AuthController {
   @Public()
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  signup(@Body() dto: AuthSignupDto): Promise<Tokens> {
+  signup(@Body() dto: AuthSignupDto): Promise<SignupType> {
     return this.authService.signup(dto);
   }
 
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  login(@Body() dto: AuthLoginDto): Promise<Tokens> {
+  login(@Body() dto: AuthLoginDto): Promise<LoginType> {
     return this.authService.login(dto);
   }
 

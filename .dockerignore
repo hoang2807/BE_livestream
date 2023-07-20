@@ -7,3 +7,4 @@ dist
 .dockerignore
 docker-conpose.yml
 READEME.md
+prisma/migrations

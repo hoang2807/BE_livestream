@@ -1,1 +1,2 @@
-export * from './tokens.type';
+export * from './auth/tokens.type';
+export * from './auth/signup.type';

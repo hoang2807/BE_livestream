@@ -2,14 +2,15 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthSignupDto, AuthLoginDto } from './dto';
 import * as bcrypt from 'bcrypt';
-import { Tokens } from './types';
+import { SignupType, Tokens } from './types';
 import { JwtService } from '@nestjs/jwt';
+import { LoginType } from './types/auth/login.type';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
-  async signup(dto: AuthSignupDto): Promise<Tokens> {
+  async signup(dto: AuthSignupDto): Promise<SignupType> {
     const emailExists = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
@@ -39,10 +40,21 @@ export class AuthService {
 
     const tokens = await this.getTokens(newUser.id, newUser.email);
     await this.updateRtHash(newUser.id, tokens.refresh_token);
-    return tokens;
+
+    const data = {
+      username: dto.username,
+      fullname: dto.full_name,
+      email: dto.email,
+      phone_number: dto.phone_number,
+      access_token: tokens.access_token,
+      exp_access_token: tokens.exp_access_token,
+      refresh_token: tokens.refresh_token,
+      exp_refresh_token: tokens.exp_refresh_token,
+    };
+    return data;
   }
 
-  async login(dto: AuthLoginDto): Promise<Tokens> {
+  async login(dto: AuthLoginDto): Promise<LoginType> {
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
@@ -58,7 +70,19 @@ export class AuthService {
 
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRtHash(user.id, tokens.refresh_token);
-    return tokens;
+
+    const data = {
+      username: user.username,
+      fullname: user.full_name,
+      email: user.email,
+      phone_number: user.phone_number,
+      access_token: tokens.access_token,
+      exp_access_token: tokens.exp_access_token,
+      refresh_token: tokens.refresh_token,
+      exp_refresh_token: tokens.exp_refresh_token,
+    };
+
+    return data;
   }
 
   async logout(userId: number) {
@@ -124,7 +148,9 @@ export class AuthService {
 
     return {
       access_token: at,
+      exp_access_token: new Date().getTime() + 15 * 60 * 1000,
       refresh_token: rt,
+      exp_refresh_token: new Date().getTime() + 7 * 24 * 60 * 60 * 1000,
     };
   }
 

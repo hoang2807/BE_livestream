@@ -27,5 +27,17 @@ model User {
   phone_number String
   hash String
   hashedRT String?
-  role Role @default(USER)
+}
+
+model Admin {
+  id Int @id @default(autoincrement())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  username String @unique
+  full_name String?
+  email String @unique
+  phone_number String
+  hash String
+  hashedRT String?
 }
