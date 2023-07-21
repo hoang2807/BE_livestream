@@ -10,4 +10,4 @@ FROM base as development
 CMD ["npm", "run", "start:dev"]
 
 FROM base as production
-CMD ["npm", "run", "start:prod"]
+CMD sh ./process.sh

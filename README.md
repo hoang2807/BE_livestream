@@ -29,8 +29,7 @@
 ## Installation
 
 ```bash
-$ docker-compose -f ./docker-compose.prod.yml up --build
-$ npx prisma migrate dev
+docker-compose -f ./docker-compose.prod.yml up --build
 ```
 
 ## Use
