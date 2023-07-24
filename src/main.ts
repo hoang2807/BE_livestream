@@ -1,8 +1,8 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AtGuard } from './common/guards';
+import { CustomExceptionFilter } from './core/exceptions/base-exception-filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,8 +20,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/swagger', app, document);
 
+  app.useGlobalFilters(new CustomExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
-  // app.useGlobalGuards(new AtGuard());
+
   await app.listen(4000);
 }
 bootstrap();

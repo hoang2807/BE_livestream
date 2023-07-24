@@ -20,6 +20,7 @@ model User {
   full_name String?
   email String @unique
   phone_number String
+  address String
   hash String
   hashedRT String?
 }
@@ -33,6 +34,7 @@ model Admin {
   full_name String?
   email String @unique
   phone_number String
+  address String
   hash String
   hashedRT String?
 }

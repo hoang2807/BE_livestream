@@ -27,4 +27,9 @@ export class AuthSignupDto {
   @IsNotEmpty()
   @IsString()
   phone_number: string;
+
+  @ApiProperty({})
+  @IsNotEmpty()
+  @IsString()
+  address: string;
 }

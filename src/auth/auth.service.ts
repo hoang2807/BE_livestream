@@ -1,8 +1,14 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnprocessableEntityException,
+  UnauthorizedException,
+  HttpStatus,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthSignupDto, AuthLoginDto } from './dto';
 import * as bcrypt from 'bcrypt';
-import { SignupType, Tokens } from './types';
+import { Tokens, ResponseType, SignupType } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { LoginType } from './types/auth/login.type';
 
@@ -10,14 +16,18 @@ import { LoginType } from './types/auth/login.type';
 export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
-  async signup(dto: AuthSignupDto): Promise<SignupType> {
+  async signup(dto: AuthSignupDto): Promise<ResponseType> {
     const emailExists = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
       },
     });
 
-    if (emailExists) throw new ForbiddenException('Email exists');
+    if (emailExists)
+      throw new UnprocessableEntityException('Email exists', {
+        cause: new Error(),
+        description: 'Email exists',
+      });
 
     const usernameExists = await this.prisma.user.findUnique({
       where: {
@@ -25,7 +35,11 @@ export class AuthService {
       },
     });
 
-    if (usernameExists) throw new ForbiddenException('Username exists');
+    if (usernameExists)
+      throw new UnprocessableEntityException('Username exists', {
+        cause: new Error(),
+        description: 'Username exists',
+      });
 
     const hash = await this.hashData(dto.password);
     const newUser = await this.prisma.user.create({
@@ -34,6 +48,7 @@ export class AuthService {
         full_name: dto.full_name,
         email: dto.email,
         phone_number: dto.phone_number,
+        address: dto.address,
         hash,
       },
     });
@@ -41,48 +56,70 @@ export class AuthService {
     const tokens = await this.getTokens(newUser.id, newUser.email);
     await this.updateRtHash(newUser.id, tokens.refresh_token);
 
-    const data = {
+    const data: SignupType = {
       username: dto.username,
       fullname: dto.full_name,
       email: dto.email,
       phone_number: dto.phone_number,
+      address: dto.address,
       access_token: tokens.access_token,
       exp_access_token: tokens.exp_access_token,
       refresh_token: tokens.refresh_token,
       exp_refresh_token: tokens.exp_refresh_token,
+      createAt: new Date(newUser.createAt).toISOString(),
+      updateAt: new Date(newUser.updateAt).toISOString(),
     };
-    return data;
+
+    return {
+      data,
+      message: 'Signup success',
+      statusCode: HttpStatus.CREATED,
+    };
   }
 
-  async login(dto: AuthLoginDto): Promise<LoginType> {
+  async login(dto: AuthLoginDto): Promise<ResponseType> {
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
       },
     });
 
-    if (!user) throw new ForbiddenException('Username or password invalid');
+    if (!user)
+      throw new UnauthorizedException('Username or password invalid', {
+        cause: new Error(),
+        description: 'Username or password invalid',
+      });
 
     const passwordMatches = await bcrypt.compare(dto.password, user.hash);
 
     if (!passwordMatches)
-      throw new ForbiddenException('Username or password invalid');
+      throw new UnauthorizedException('Username or password invalid', {
+        cause: new Error(),
+        description: 'Username or password invalid',
+      });
 
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRtHash(user.id, tokens.refresh_token);
 
-    const data = {
+    const data: LoginType = {
       username: user.username,
       fullname: user.full_name,
       email: user.email,
       phone_number: user.phone_number,
+      address: user.address,
       access_token: tokens.access_token,
       exp_access_token: tokens.exp_access_token,
       refresh_token: tokens.refresh_token,
       exp_refresh_token: tokens.exp_refresh_token,
+      createAt: new Date(user.createAt).toISOString(),
+      updateAt: new Date(user.updateAt).toISOString(),
     };
 
-    return data;
+    return {
+      data,
+      message: 'Login success',
+      statusCode: HttpStatus.OK,
+    };
   }
 
   async logout(userId: number) {
@@ -141,16 +178,20 @@ export class AuthService {
         },
         {
           secret: 'rt-secret',
-          expiresIn: 60 * 60 * 24 * 7,
+          expiresIn: 60 * 60 * 24 * 3,
         },
       ),
     ]);
 
     return {
       access_token: at,
-      exp_access_token: new Date().getTime() + 15 * 60 * 1000,
+      exp_access_token: new Date(
+        new Date().getTime() + 15 * 60 * 1000,
+      ).toISOString(),
       refresh_token: rt,
-      exp_refresh_token: new Date().getTime() + 7 * 24 * 60 * 60 * 1000,
+      exp_refresh_token: new Date(
+        new Date().getTime() + 3 * 24 * 60 * 60 * 1000,
+      ).toISOString(),
     };
   }
 
