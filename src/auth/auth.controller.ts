@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -15,11 +17,28 @@ import {
   GetCurrentUserId,
   Public,
 } from 'src/common/decorators';
+import { GoogleGuard } from 'src/common/guards/google.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {
     this.authService = authService;
+  }
+
+  @Public()
+  @Get('google')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(GoogleGuard)
+  google() {
+    return HttpStatus.OK;
+  }
+
+  @Public()
+  @Get('google/callback')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(GoogleGuard)
+  loginGoogleCallback(@Req() req): Promise<ResponseType> {
+    return this.authService.loginGoogle(req);
   }
 
   @Public()

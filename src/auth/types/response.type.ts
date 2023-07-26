@@ -1,5 +1,5 @@
 export type ResponseType = {
-  data: unknown;
+  data: any;
   message: string;
   statusCode: number;
 };

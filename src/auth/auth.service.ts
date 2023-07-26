@@ -4,6 +4,7 @@ import {
   UnprocessableEntityException,
   UnauthorizedException,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthSignupDto, AuthLoginDto } from './dto';
@@ -118,6 +119,14 @@ export class AuthService {
     return {
       data,
       message: 'Login success',
+      statusCode: HttpStatus.OK,
+    };
+  }
+
+  async loginGoogle(@Req() req): Promise<ResponseType> {
+    return {
+      data: req.user,
+      message: 'success',
       statusCode: HttpStatus.OK,
     };
   }
