@@ -11,13 +11,12 @@ import {
 import { AuthService } from './auth.service';
 import { AuthSignupDto, AuthLoginDto } from './dto';
 import { ResponseType } from './types';
-import { RtGuard } from 'src/common/guards';
+import { FacebookGuard, RtGuard, GoogleGuard } from 'src/common/guards';
 import {
   GetCurrentUser,
   GetCurrentUserId,
   Public,
 } from 'src/common/decorators';
-import { GoogleGuard } from 'src/common/guards/google.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -39,6 +38,22 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   loginGoogleCallback(@Req() req): Promise<ResponseType> {
     return this.authService.loginGoogle(req);
+  }
+
+  @Public()
+  @Get('facebook')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(FacebookGuard)
+  facebook() {
+    return HttpStatus.OK;
+  }
+
+  @Public()
+  @Get('facebook/callback')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(FacebookGuard)
+  loginFacebookCallback() {
+    return HttpStatus.OK;
   }
 
   @Public()

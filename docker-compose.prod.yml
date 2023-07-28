@@ -25,7 +25,10 @@ services:
       - ACCESSTOKENCLOUD=312|XpS4bX0TGOCesP42zwwXOwY4Gus7i2PJn4BK7C80
       - GOOGLE_CLIENT_ID=1021811593879-a4f0h767bd6s13bt1ei910beqepp3qmc.apps.googleusercontent.com
       - GOOGLE_SECRET=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
-      - CALLBACKGOOGLEURL=http://localhost:4000/api/v1/auth/google/callback
+      - CALLBACK_GOOGLE_URL=http://localhost:4000/api/v1/auth/google/callback
+      - FACEBOOK_CLIENT_ID=1425041068343175
+      - FACEBOOK_SECRET=ead916b4ab4fd6025df7ea88d4a29406
+      - CALLBACK_FACEBOOK_URL=http://localhost:4000/api/v1/auth/facebook/callback
     volumes:
       - /usr/src/app/node_modules
     ports:
