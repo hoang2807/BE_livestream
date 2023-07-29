@@ -29,6 +29,7 @@
 ## Installation
 
 ```bash
+cp .env.example .env
 docker-compose -f ./docker-compose.prod.yml up --build
 ```
 
@@ -38,10 +39,18 @@ docker-compose -f ./docker-compose.prod.yml up --build
 /api/v1/swagger -> render swagger
 ```
 
+## if error
+
+```
+npx prisma generate
+npx prisma migrate dev
+```
+
 ## Running the app
 
 ```bash
 # development
+$ cp .env.example .env
 $ npm run start
 
 # watch mode

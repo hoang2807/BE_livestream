@@ -31,6 +31,7 @@ services:
       - CALLBACK_FACEBOOK_URL=http://localhost:4000/api/v1/auth/facebook/callback
     volumes:
       - /usr/src/app/node_modules
+      - /usr/src/app/src
     ports:
       - 4000:4000
     depends_on:
