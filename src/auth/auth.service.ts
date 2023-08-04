@@ -123,14 +123,6 @@ export class AuthService {
     };
   }
 
-  async loginGoogle(@Req() req): Promise<ResponseType> {
-    return {
-      data: req.user,
-      message: 'success',
-      statusCode: HttpStatus.OK,
-    };
-  }
-
   async logout(userId: number) {
     await this.prisma.user.updateMany({
       where: {
@@ -146,7 +138,7 @@ export class AuthService {
     return true;
   }
 
-  async refreshToken(userId: number, rt: string) {
+  async refreshToken(userId: number, rt: string): Promise<Tokens> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
