@@ -18,6 +18,7 @@ model User {
 
   username String @unique
   full_name String?
+  avatar_path String?
   email String @unique
   phone_number String
   address String
@@ -32,6 +33,7 @@ model Admin {
 
   username String @unique
   full_name String?
+  avatar_path String?
   email String @unique
   phone_number String?
   address String?

@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Redirect,
   Req,
   Res,
   UseGuards,
@@ -20,11 +19,10 @@ import {
   Public,
 } from 'src/common/decorators';
 import { Request, Response } from 'express';
-import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService, private config: ConfigService) {
+  constructor(private authService: AuthService) {
     this.authService = authService;
   }
 
@@ -43,7 +41,7 @@ export class AuthController {
   loginGoogleCallback(@Req() req: Request, @Res() res: Response) {
     const { username, email, avatar } = req.user as SocialType;
 
-    const CLIENT_URL = this.config.get<string>('CLIENT_URL');
+    const CLIENT_URL = process.env.CLIENT_URL;
     return res.redirect(
       `${CLIENT_URL}/google-oauth-success-redirect/${encodeURIComponent(
         username,

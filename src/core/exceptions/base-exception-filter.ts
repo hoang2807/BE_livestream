@@ -5,7 +5,7 @@ import {
   HttpException,
   Logger,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 export interface ApiError {
   statusCode: number;
