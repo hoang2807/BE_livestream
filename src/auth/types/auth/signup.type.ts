@@ -1,6 +1,7 @@
 export type SignupType = {
+  id: number;
   username: string;
-  fullname: string;
+  full_name: string;
   email: string;
   phone_number: string;
   address: string;

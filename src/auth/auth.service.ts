@@ -58,8 +58,9 @@ export class AuthService {
     await this.updateRtHash(newUser.id, tokens.refresh_token);
 
     const data: SignupType = {
+      id: newUser.id,
       username: dto.username,
-      fullname: dto.full_name,
+      full_name: dto.full_name,
       email: dto.email,
       phone_number: dto.phone_number,
       address: dto.address,
@@ -103,8 +104,9 @@ export class AuthService {
     await this.updateRtHash(user.id, tokens.refresh_token);
 
     const data: LoginType = {
+      id: user.id,
       username: user.username,
-      fullname: user.full_name,
+      full_name: user.full_name,
       email: user.email,
       phone_number: user.phone_number,
       address: user.address,

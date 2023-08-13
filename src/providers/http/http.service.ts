@@ -14,7 +14,7 @@ export class HttpServiceCloud {
       formData.append('relativePath', params.relativePath);
       const res = await firstValueFrom(
         this.httpService.post(
-          this.httpService.axiosRef.defaults.baseURL,
+          this.httpService.axiosRef.defaults.baseURL + '/uploads',
           formData,
           {
             headers: {

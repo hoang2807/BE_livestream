@@ -10,6 +10,7 @@ import { ResponseType } from 'src/auth/types';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HttpServiceCloud } from 'src/providers/http/http.service';
 import { UserDto } from './dto/user.dto';
+import { CloudParamsType } from 'src/type/cloud_param.type';
 
 @Injectable()
 export class UserService {
@@ -43,8 +44,20 @@ export class UserService {
         description: 'ID invalid',
       });
 
+    const data = {
+      id: user.id,
+      username: user.username,
+      full_name: user.full_name,
+      email: user.email,
+      phone_number: user.phone_number,
+      address: user.address,
+      avatar_path: `${process.env.CLOUD_API_URL}/${user.avatar_path}`,
+      createAt: user.createAt,
+      updateAt: user.updateAt,
+    };
+
     return {
-      data: user,
+      data,
       message: 'success',
       statusCode: HttpStatus.OK,
     };
@@ -57,7 +70,7 @@ export class UserService {
   ): Promise<ResponseType> {
     const { username, full_name, phone_number, address } = user;
 
-    const params = {
+    const params: CloudParamsType = {
       file: file.buffer,
       parentId: '',
       relativePath: `/livestream/avatar/${file.originalname}`,
@@ -96,7 +109,11 @@ export class UserService {
         id,
       },
       data: {
-        avatar_path: `file-entries/${data.fileEntry.id}/shareable-link`,
+        avatar_path: `/file-entries/${data.fileEntry.id}`,
+        username,
+        full_name,
+        address,
+        phone_number,
       },
     });
 
@@ -128,6 +145,14 @@ export class UserService {
 
     return {
       data: 'success',
+      message: 'Delete user success',
+      statusCode: HttpStatus.OK,
+    };
+  }
+
+  getUrlAvatarUser(avatar_path: string): ResponseType {
+    return {
+      data: `${process.env.CLOUD_API_URL}/${avatar_path}`,
       message: 'Delete user success',
       statusCode: HttpStatus.OK,
     };

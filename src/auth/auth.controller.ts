@@ -19,7 +19,9 @@ import {
   Public,
 } from 'src/common/decorators';
 import { Request, Response } from 'express';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {
@@ -67,6 +69,7 @@ export class AuthController {
 
   @Public()
   @Post('signup')
+  @ApiOperation({ summary: 'Signup' })
   @HttpCode(HttpStatus.CREATED)
   signup(@Body() dto: AuthSignupDto): Promise<ResponseType> {
     return this.authService.signup(dto);
@@ -74,12 +77,14 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @ApiOperation({ summary: 'Login' })
   @HttpCode(HttpStatus.OK)
   login(@Body() dto: AuthLoginDto): Promise<ResponseType> {
     return this.authService.login(dto);
   }
 
   @Post('logout')
+  @ApiOperation({ summary: 'Logout' })
   @HttpCode(HttpStatus.OK)
   logout(@GetCurrentUserId() userId: number) {
     return this.authService.logout(userId);
@@ -88,6 +93,7 @@ export class AuthController {
   @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
+  @ApiOperation({ summary: 'Refresh token' })
   @HttpCode(HttpStatus.OK)
   refreshToken(
     @GetCurrentUserId() userId: number,

@@ -1,10 +1,35 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
+import { ResponseType } from 'src/type/response.type';
+import { VideoUploadDto } from 'src/videos/dto/video.upload.dto';
+import { VideosService } from 'src/videos/videos.service';
 
-@Controller('videos')
+@ApiTags('Video')
+@Controller('video')
 export class VideosController {
-  @Get('upload')
+  constructor(private videoService: VideosService) {
+    this.videoService = videoService;
+  }
+
+  @Post('upload/:id')
   @HttpCode(HttpStatus.CREATED)
-  async uploadVideo() {
-    return true;
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadVideo(
+    @Body() video: VideoUploadDto,
+    @Param() id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ResponseType> {
+    return this.videoService.uploadVideo(parseInt(id), video, file);
   }
 }

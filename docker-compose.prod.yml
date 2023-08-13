@@ -20,6 +20,7 @@ services:
       dockerfile: Dockerfile
       target: production
     restart: unless-stopped
+    container_name: nestjs-app
     env_file: .env
     volumes:
       - /usr/src/app/node_modules
