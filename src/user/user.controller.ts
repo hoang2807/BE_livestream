@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -23,7 +24,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  @ApiParam({ name: 'id', type: String })
+  @ApiParam({ name: 'id', type: Number })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   getUserById(@Param('id') id: string): Promise<ResponseType> {
@@ -31,14 +32,22 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
+  @ApiParam({ name: 'id', type: Number })
   @UseInterceptors(FileInterceptor('avatar'))
   @Put(':id')
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   async updateUser(
-    @Param('id') id: number,
+    @Param('id') id,
     @UploadedFile() file: Express.Multer.File,
     @Body() user: UserDto,
   ): Promise<any> {
-    return this.userService.updateUser(+id, file, user);
+    return this.userService.updateUser(parseInt(id), file, user);
+  }
+
+  @ApiParam({ name: 'id', type: Number })
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async deleteUser(@Param('id') id): Promise<ResponseType> {
+    return this.userService.deleteUser(parseInt(id));
   }
 }

@@ -102,7 +102,33 @@ export class UserService {
 
     return {
       data: 'success',
-      message: 'success',
+      message: 'Update user success',
+      statusCode: HttpStatus.OK,
+    };
+  }
+
+  async deleteUser(id: number): Promise<ResponseType> {
+    const userExits = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!userExits)
+      throw new BadRequestException('ID invalid', {
+        cause: new Error(),
+        description: 'ID invalid',
+      });
+
+    await this.prismaService.user.delete({
+      where: {
+        id,
+      },
+    });
+
+    return {
+      data: 'success',
+      message: 'Delete user success',
       statusCode: HttpStatus.OK,
     };
   }
