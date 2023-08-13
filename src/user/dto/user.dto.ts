@@ -15,11 +15,6 @@ export class UserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  avatar_path: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
   phone_number: string;
 
   @ApiProperty()

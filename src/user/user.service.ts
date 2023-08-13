@@ -3,6 +3,7 @@ import {
   Body,
   HttpStatus,
   Injectable,
+  UnprocessableEntityException,
   UploadedFile,
 } from '@nestjs/common';
 import { ResponseType } from 'src/auth/types';
@@ -32,15 +33,15 @@ export class UserService {
         email: true,
         phone_number: true,
         address: true,
+        avatar_path: true,
       },
     });
 
-    if (!user) {
+    if (!user)
       throw new BadRequestException('ID invalid', {
         cause: new Error(),
         description: 'ID invalid',
       });
-    }
 
     return {
       data: user,
@@ -54,7 +55,7 @@ export class UserService {
     @UploadedFile() file: Express.Multer.File,
     @Body() user: UserDto,
   ): Promise<ResponseType> {
-    const { username, full_name, avatar_path, phone_number, address } = user;
+    const { username, full_name, phone_number, address } = user;
 
     const params = {
       file: file.buffer,
@@ -63,7 +64,41 @@ export class UserService {
       fileName: file.originalname,
     };
 
-    await this.httpService.uploadFile(params);
+    const userExits = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    // check if id invalid
+    if (!userExits)
+      throw new BadRequestException('ID invalid', {
+        cause: new Error(),
+        description: 'ID invalid',
+      });
+
+    const count = await this.prismaService.user.count({
+      where: {
+        username: username,
+      },
+    });
+
+    if (!(userExits.username === username && count === 1))
+      throw new UnprocessableEntityException('Username exits', {
+        cause: new Error(),
+        description: 'Username exits',
+      });
+
+    const data = await this.httpService.uploadFile(params);
+    console.log('84', `file-entries/${data.fileEntry.id}/shareable-link`);
+    await this.prismaService.user.update({
+      where: {
+        id,
+      },
+      data: {
+        avatar_path: `file-entries/${data.fileEntry.id}/shareable-link`,
+      },
+    });
 
     return {
       data: 'success',

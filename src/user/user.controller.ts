@@ -39,6 +39,6 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @Body() user: UserDto,
   ): Promise<any> {
-    return this.userService.updateUser(id, file, user);
+    return this.userService.updateUser(+id, file, user);
   }
 }
